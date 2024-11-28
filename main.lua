@@ -643,6 +643,23 @@ function library:init()
     end
 
 
+    local screenGui = Instance.new('ScreenGui');
+    if syn then syn.protect_gui(screenGui); end
+    screenGui.Parent = game:GetService('CoreGui');
+    screenGui.Enabled = nil;
+    utility:Instance('ImageButton', {
+        Parent = screenGui,
+        Visible = false,
+        Modal = true,
+        Size = UDim2.new(1,0,1,0),
+        ZIndex = -1,
+        Transparency = 1;
+    })
+
+    utility:Connection(library.unloaded, function()
+        screenGui:Destroy()
+    end)
+
     utility:Connection(inputservice.InputBegan, function(input, gpe)
         if self.hasInit then
             if input.KeyCode == self.toggleKey and not library.opening and not gpe then
@@ -737,7 +754,7 @@ function library:init()
     
     function self:SetOpen(bool)
         self.open = bool;
-        screenGui.Enabled = bool;
+        screenGui.Enabled = nil;
 
         if bool and library.flags.disablemenumovement then
             actionservice:BindAction(
